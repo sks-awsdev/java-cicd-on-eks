@@ -24,36 +24,27 @@ This pipeline helps automate the entire process from writing code to deploying i
 6. Deploy the app to AWS EKS using ArgoCD and Kubernetes manifests  
 7. Manage AWS infrastructure with CloudFormation  
 
-
 ## Repository Structure
+.
+├── .github/
+│   └── workflows/
+│       └── ci.yml                   # (Optional) GitHub Actions workflow
+├── app/
+│   ├── src/
+│   │   ├── main/
+│   │   │   └── java/
+│   │   │       └── com/yourcompany/app/  # Java source code
+│   │   └── test/
+│   │       └── java/
+│   │           └── com/yourcompany/app/  # Java test cases
+│   ├── Dockerfile                   # Dockerfile to build app image
+│   └── sonar-project.properties    # SonarQube configuration
+├── k8s/
+│   ├── deployment.yaml             # Kubernetes Deployment manifest
+│   ├── service.yaml                # Kubernetes Service manifest
+│   └── ingress.yaml                # (Optional) Kubernetes Ingress manifest
+├── aws/
+│   └── eks-cluster.yaml            # AWS CloudFormation template for EKS cluster
+├── Jenkinsfile                    # Jenkins pipeline script
+└── README.md                      # Project documentation
 
-```plaintext
-.github/
-└── workflows/
-    └── ci.yml                         # (Optional) GitHub Actions workflow file
-
-app/
-├── src/
-│   ├── main/
-│   │   └── java/
-│   │       └── com/
-│   │           └── yourcompany/
-│   │               └── app/           # Java source code
-│   └── test/
-│       └── java/
-│           └── com/
-│               └── yourcompany/
-│                   └── app/           # Java test cases
-├── Dockerfile                        # Dockerfile to build app image
-└── sonar-project.properties          # SonarQube configuration
-
-k8s/
-├── deployment.yaml                   # Kubernetes Deployment manifest
-├── service.yaml                      # Kubernetes Service manifest
-└── ingress.yaml                     # (Optional) Kubernetes Ingress manifest
-
-aws/
-└── eks-cluster.yaml                  # AWS CloudFormation template for EKS cluster
-
-Jenkinsfile                         # Jenkins pipeline script
-README.md                           # Project documentation
