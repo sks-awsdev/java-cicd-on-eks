@@ -24,6 +24,9 @@ This pipeline helps automate the entire process from writing code to deploying i
 6. Deploy the app to AWS EKS using ArgoCD and Kubernetes manifests  
 7. Manage AWS infrastructure with CloudFormation  
 
+## Project Repo Structure
+
+```plaintext
 .
 ├── .github/
 │   └── workflows/
@@ -46,5 +49,6 @@ This pipeline helps automate the entire process from writing code to deploying i
 │   └── eks-cluster.yaml            # AWS CloudFormation template for EKS cluster
 ├── Jenkinsfile                    # Jenkins pipeline script
 └── README.md                      # Project documentation
+
 
 
