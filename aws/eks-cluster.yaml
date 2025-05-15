@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'EKS Cluster with 2 nodes'
+
+Resources:
+  EKSCluster:
+    Type: AWS::EKS::Cluster
+    Properties:
+      Name: devops-eks-cluster
+      ResourcesVpcConfig:
+        SubnetIds:
+          - subnet-xxxxxxxx  # TODO: replace with your subnet IDs
+          - subnet-yyyyyyyy
+        SecurityGroupIds:
+          - sg-zzzzzzzz      # TODO: replace with your security group IDs
+
+  NodeGroup:
+    Type: AWS::EKS::Nodegroup
+    Properties:
+      ClusterName: !Ref EKSCluster
+      NodeRole: arn:aws:iam::123456789012:role/YourEKSNodeRole  # TODO: replace
+      Subnets:
+        - subnet-xxxxxxxx  # same as above
+        - subnet-yyyyyyyy
+      ScalingConfig:
+        DesiredSize: 2
+        MaxSize: 3
+        MinSize: 1
+      InstanceTypes:
+        - t3.medium
+      AmiType: AL2_x86_64
