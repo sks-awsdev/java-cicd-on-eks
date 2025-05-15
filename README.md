@@ -1,11 +1,45 @@
-| Path                              | Purpose                                                                |
-| --------------------------------- | ---------------------------------------------------------------------- |
-| `jenkins/Jenkinsfile`             | Your CI/CD logic using Jenkins (build, test, sonar, docker build/push) |
-| `sonar/sonar-project.properties`  | Required for SonarQube scan (project key, source dir etc.)             |
-| `docker/Dockerfile`               | Build image for your Java application                                  |
-| `k8s/`                            | Kubernetes manifests used by ArgoCD to deploy the app                  |
-| `cloudformation/eks-cluster.yaml` | Provision EKS cluster (can be replaced with Terraform later)           |
-| `src/`                            | Java source code (your app)                                            |
-| `pom.xml`                         | Defines dependencies and build steps for Maven                         |
-| `.gitignore`                      | Ignore IDE, target folders, etc.                                       |
-| `README.md`                       | Project overview, instructions (write later)                           |
+# DevOps CI/CD Pipeline for Java App on AWS EKS
+
+## Project Description
+
+This project sets up a full DevOps pipeline for a Java application using popular tools and AWS cloud. It includes:
+
+- Storing code in GitHub  
+- Building and testing the app automatically with Jenkins and Maven  
+- Checking code quality with SonarQube  
+- Packaging the app into Docker containers  
+- Pushing Docker images to Docker Hub  
+- Deploying the app on an AWS EKS Kubernetes cluster using ArgoCD for easy and automated updates  
+- Creating and managing AWS infrastructure with CloudFormation templates  
+
+This pipeline helps automate the entire process from writing code to deploying it on the cloud, making development faster and more reliable.
+
+## Repository Structure
+
+├── .github/
+│ └── workflows/ # (Optional) GitHub Actions workflows
+├── app/
+│ ├── src/ # Java source code
+│ ├── tests/ # Unit and integration tests
+│ ├── Dockerfile # Dockerfile to build app image
+│ └── sonar-project.properties # SonarQube config file
+├── k8s/
+│ ├── deployment.yaml # Kubernetes deployment manifest
+│ ├── service.yaml # Kubernetes service manifest
+│ └── ingress.yaml # (Optional) Ingress manifest
+├── aws/
+│ └── eks-cluster.yaml # AWS CloudFormation template for EKS cluster
+└── Jenkinsfile # Jenkins pipeline script
+
+
+## How to Use
+
+1. Clone the repository  
+2. Update configuration files with your details (Docker Hub repo, AWS subnet IDs, IAM roles, etc.)  
+3. Setup Jenkins and connect it with this repo  
+4. Configure SonarQube and Docker Hub credentials in Jenkins  
+5. Run the Jenkins pipeline to build, test, analyze, and push Docker images  
+6. Deploy the app to AWS EKS using ArgoCD and Kubernetes manifests  
+7. Manage AWS infrastructure with CloudFormation  
+
+---
