@@ -1,14 +1,14 @@
-# Use an OpenJDK runtime base image
+# Use a basic OpenJDK image
 FROM openjdk:17-jdk-slim
 
-# Set working directory inside container
+# Set the folder inside the container
 WORKDIR /app
 
-# Copy the built JAR from Jenkins build context
+# Copy the JAR file (after building with Maven or Gradle)
 COPY target/devops-app-1.0-SNAPSHOT.jar app.jar
 
-# Expose port (optional, useful for Spring Boot etc.)
+# Expose port (your app usually runs on 8080)
 EXPOSE 8080
 
-# Run the application
+# Run the JAR file
 ENTRYPOINT ["java", "-jar", "app.jar"]
