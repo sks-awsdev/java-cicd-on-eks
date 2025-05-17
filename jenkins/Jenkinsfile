@@ -36,7 +36,7 @@ pipeline {
         stage('Docker Login') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'Doc-cred-global', usernameVariable: 'docusr', passwordVariable: 'docpass')]) {
+                    withCredentials([usernamePassword(credentialsId: 'Doc-cred-global', passwordVariable: 'docpass', usernameVariable: 'docusr')]) {
                         sh 'echo $docpass | docker login -u $docusr --password-stdin'
                     }
                 }
@@ -46,24 +46,19 @@ pipeline {
         stage('Docker Build & Push') {
             steps {
                 sh """
-                    docker build -t $DOCKER_IMAGE .
-                    docker push $DOCKER_IMAGE
-                    docker logout
+                   docker build -t $DOCKER_IMAGE .
+                   docker push $DOCKER_IMAGE
                 """
-            }
-        }
-
-        stage('Notify Success') {
-            when { success() }
-            steps {
-                echo 'Build, scan and push completed ✔'
             }
         }
     }
 
     post {
+        success {
+            echo '✅ Build, scan and push completed successfully.'
+        }
         failure {
-            echo 'Pipeline failed ❌'
+            echo '❌ Pipeline failed.'
         }
     }
 }
