@@ -1,27 +1,21 @@
 pipeline {
-    agent any                   
+    agent any
 
     environment {
         DOCKER_IMAGE = 'sksawsdev/appx:latest'
     }
 
     stages {
-
         stage('Checkout') {
             steps {
                 git url: 'https://github.com/suanx/java-cicd-on-eks.git', branch: 'main'
             }
         }
 
-        stage('Build') {
+        stage('Build & Unit Tests') {
             steps {
-                sh 'mvn clean package -DskipTests'
-            }
-        }
-
-        stage('Unit Tests') {
-            steps {
-                sh 'mvn test'
+                // Run package with tests (remove skipTests to include tests here)
+                sh 'mvn clean package'
             }
         }
 
@@ -33,11 +27,20 @@ pipeline {
             }
         }
 
+        stage('Quality Gate') {
+            steps {
+                // Wait for SonarQube analysis to finish and check quality gate status
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
         stage('Docker Login') {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'Doc-cred-global', passwordVariable: 'docpass', usernameVariable: 'docusr')]) {
-                        sh 'echo $docpass | docker login -u $docusr --password-stdin'
+                        sh "echo \"$docpass\" | docker login -u $docusr --password-stdin"
                     }
                 }
             }
