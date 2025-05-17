@@ -35,17 +35,19 @@ pipeline {
             steps {
                 script {
                     echo "Checking SonarQube Quality Gate..."
-                    def sonarQubeUrl = 'http://34.29.241.110:9000'
-                    def response = httpRequest(
-                        url: "${sonarQubeUrl}/api/qualitygates/project_status?projectKey=com.example:devops-app",
-                        authentication: 'SonarQube-conn',
-                        httpMode: 'GET'
-                    )
-                    def qgStatus = readJSON text: response.content
-                    def qgResult = qgStatus.projectStatus.status
-                    echo "Quality Gate status: ${qgResult}"
-                    if (qgResult != 'OK') {
-                        error "Quality Gate failed: ${qgResult}"
+                    withCredentials([string(credentialsId: 'SonarQube-conn', variable: 'sonarqube-id')]) {
+                        def sonarQubeUrl = 'http://34.29.241.110:9000'
+                        def response = httpRequest(
+                            url: "${sonarQubeUrl}/api/qualitygates/project_status?projectKey=com.example:devops-app",
+                            httpMode: 'GET',
+                            customHeaders: [[name: 'Authorization', value: "Bearer ${sonarqube-id}"]]
+                        )
+                        def qgStatus = readJSON text: response.content
+                        def qgResult = qgStatus.projectStatus.status
+                        echo "Quality Gate status: ${qgResult}"
+                        if (qgResult != 'OK') {
+                            error "Quality Gate failed: ${qgResult}"
+                        }
                     }
                 }
             }
