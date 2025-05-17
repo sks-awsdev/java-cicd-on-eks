@@ -1,61 +1,62 @@
-/*
- * Jenkins Declarative Pipeline
- * --------------------------------------------------------
- * Adjust the TODO section placeholders before running.
- */
-
 pipeline {
-    agent any                     // or { label 'your‑agent' }
+    agent any                   
 
     environment {
-        // TODO: replace with your Docker Hub repo
-        DOCKER_IMAGE = 'your-dockerhub-username/your-app-name'
+        DOCKER_IMAGE = 'sksawsdev/appx:latest'
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                checkout scm       // uses the repo this Jenkinsfile lives in
+                git url: 'https://github.com/suanx/java-cicd-on-eks.git', branch: 'main'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'mvn clean package -DskipTests'   // adjust options as needed
+                sh 'mvn clean package -DskipTests'
             }
         }
 
-        stage('Unit Tests') {
+        stage('Unit Tests') {
             steps {
-                sh 'mvn test'       // leave blank for now if you’ve no tests
+                sh 'mvn test'
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     sh 'mvn sonar:sonar'
                 }
             }
-            // Wait for Sonar quality gate (optional)
-            // post { /*…*/ }
         }
 
-        stage('Docker Build & Push') {
+        stage('Docker Login') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'Doc-cred-global', usernameVariable: 'docusr', passwordVariable: 'docpass')]) {
+                        sh 'echo $docpass | docker login -u $docusr --password-stdin'
+                    }
+                }
+            }
+        }
+
+        stage('Docker Build & Push') {
             steps {
                 sh """
-                   docker build -t $DOCKER_IMAGE .
-                   docker push $DOCKER_IMAGE
+                    docker build -t $DOCKER_IMAGE .
+                    docker push $DOCKER_IMAGE
+                    docker logout
                 """
             }
         }
 
-        stage('Notify Success') {          // optional – e‑mail / Slack etc.
+        stage('Notify Success') {
             when { success() }
             steps {
                 echo 'Build, scan and push completed ✔'
-                // mail to: …
             }
         }
     }
@@ -63,7 +64,6 @@ pipeline {
     post {
         failure {
             echo 'Pipeline failed ❌'
-            // mail to: …
         }
     }
 }
