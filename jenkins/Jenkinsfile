@@ -38,7 +38,7 @@ pipeline {
                     def sonarQubeUrl = 'http://34.29.241.110:9000'
                     def response = httpRequest(
                         url: "${sonarQubeUrl}/api/qualitygates/project_status?projectKey=com.example:devops-app",
-                        authentication: 'sonarqube-credentials-id',
+                        authentication: 'SonarQube-conn',
                         httpMode: 'GET'
                     )
                     def qgStatus = readJSON text: response.content
