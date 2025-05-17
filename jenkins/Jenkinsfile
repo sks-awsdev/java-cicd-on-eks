@@ -48,7 +48,6 @@ pipeline {
                         error "Quality Gate failed: ${qgResult}"
                     }
                 }
-igrafact>
             }
         }
 
